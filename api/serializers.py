@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.relations import RelatedField
 
-from .models import Massage, People, Categories
+from .models import Massage, People, Categories, Orders
 
 
 # Изучить типы полей в сериалайзере
@@ -35,6 +35,15 @@ class SerializerClient(serializers.Serializer):
 
 class SerializerCategories(serializers.Serializer):
     massage = RelatedField(many=True, read_only=True)
+
     class Meta:
         model = Categories
         fields = ['name']
+
+
+class SerializerOrder(serializers.Serializer):
+    orders = RelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = Orders
+        fields = ["__all__"]

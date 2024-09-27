@@ -8,16 +8,21 @@ import uuid
 # Точки входа (ентри поинт)
 # Релейшены
 class Categories(models.Model):
-    uuid = models.UUIDField(primary_key=True, verbose_name='Идентификационный номер человека', default=uuid.uuid4)
+    uuid = models.UUIDField(primary_key=True, verbose_name='Идентификационный номер категории', default=uuid.uuid4)
     name = models.CharField(max_length=100, verbose_name='Название категории')
     # Связь OneToMenu с massage
 
 
+class Orders(models.Model):
+    uuid = models.UUIDField(primary_key=True, verbose_name='Идентификационный номер заказа', default=uuid.uuid4)
+
+
 class Massage(models.Model):
-    uuid = models.UUIDField(primary_key=True, verbose_name='Идентификатор записи', default=uuid.uuid4)
+    uuid = models.UUIDField(primary_key=True, verbose_name='Идентификатор массажа', default=uuid.uuid4)
     name = models.CharField(max_length=100, null=True, default=None)
     price = models.DecimalField(default=1.00, max_digits=7, decimal_places=2, verbose_name='Цена')
     categories = models.ForeignKey(Categories, related_name='massage', on_delete=models.CASCADE, default=None)
+    orders = models.ForeignKey(Orders, related_name='orders', on_delete=models.CASCADE, default=None)
 
     # Связь с людьми, у которых есть флаг
 
@@ -33,6 +38,8 @@ class People(User):
     # name = models.CharField(max_length=100, verbose_name='Имя пользователя')
     flag_user = models.BooleanField(verbose_name='Флаг пользователя')
     massage = models.ForeignKey(Massage, related_name='people', on_delete=models.CASCADE, default=False)
+    orders = models.OneToOneField(Orders, on_delete=models.CASCADE, primary_key=True)
+
     def __str__(self):
         return f'Имя пользователя: {self.username}, Флаг пользователя: {self.flag_user} '
 

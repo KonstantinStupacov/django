@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PeopleView, CategoriesView, MassageView
+from .views import PeopleView, CategoriesView, MassageView, OrdersView
 
 
 urlpatterns = [
@@ -9,4 +9,6 @@ urlpatterns = [
     path('catalog/<int:uuid>', CategoriesView.as_view()),
     path('massage', MassageView.as_view()),
     path('massage/<int:uuid>', MassageView.as_view()),
+    path('orders', OrdersView.as_view()),
+    path('orders/<int:uuid>', OrdersView.as_view()),
 ]

@@ -3,8 +3,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import SerializerMassage, SerializerMaster, SerializerClient, SerializerCategories
-from .models import Massage, People, Categories
+from .serializers import (SerializerMassage, SerializerMaster,
+                          SerializerClient, SerializerCategories, SerializerOrder)
+from .models import Massage, People, Categories, Orders
 
 
 class MassageView(APIView):
@@ -125,3 +126,43 @@ class PeopleView(APIView):
             people = People.objects.all()
             people.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class OrdersView(APIView):
+    def get(self, request, pk=None):
+        if pk is None:
+            orders = Orders.odjects.all()
+            serializer = SerializerOrder(orders, many=True)
+            return Response(serializer.data)
+        else:
+            orders = Orders.odjects.get(pk=pk)
+            serializer = SerializerOrder(orders)
+            return Response(serializer.data)
+
+    def post(self, request):
+        serializer = SerializerOrder(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self,request, pk=None):
+        if pk is not None:
+            orders = Orders.odjects.get(pk=pk)
+            orders.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            orders = Orders.odjects.all()
+            orders.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, pk=None):  # Add 'pk=None' to the put method
+        if pk is not None:
+            orders = Orders.objects.get(pk=pk)
+            serializer = SerializerOrder(orders, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'Please provide a valid book ID.'}, status=status.HTTP_400_BAD_REQUEST)
